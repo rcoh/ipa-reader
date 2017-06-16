@@ -1,8 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import boto3
+import logging
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
+import sys
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger()
 
 app = Flask(__name__)
 CORS(app)
@@ -35,6 +40,8 @@ def audio():
     ipa = request.get_json()['ipa']
     if len(ipa) > 100:
         return jsonify({'error': 'IPA too long'}), 400
+    logger.info(u'Generating audio for {}'.format(ipa))
+    
     return Response(audio_for_ipa(ipa), 'audio/mpeg'), 200
 
 

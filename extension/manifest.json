@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+
+  "name": "Wikipedia IPA Speaker",
+  "description": "This extension allows you to listen to IPA on Wikipedia. Icons made by Freepik from http://www.flaticon.com is licensed by http://creativecommons.org/licenses/by/3.0/ (CC 3.0 BY)",
+  "version": "1.0",
+  "icons": {
+    "64": "favicon.ico"
+  },
+  "content_scripts": [{
+    "matches": ["https://*.wikipedia.org/*"],
+    "js": ["jquery-3.2.1.min.js", "ipa.js"]
+  }],
+  "web_accessible_resources": ["play-button.svg"]
+}

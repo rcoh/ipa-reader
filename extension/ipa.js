@@ -1,5 +1,7 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
+var audioCache = {};
+
 function findIPA() {
     var ipaEls = $('.IPA');
     for (var i = 0; i < ipaEls.length; i++) {
@@ -14,14 +16,24 @@ function findIPA() {
 
 function wireButton(id, cleanIpa) {
   $('#' + id).click(function() {
-    fetch("https://www.ipaaudio.click/audio", {
-      method: "POST",
-      body: JSON.stringify({'ipa': cleanIpa}),
-      headers: {'Content-Type': 'application/json'}
-    }).then(function(response) {
-      return response.arrayBuffer();
-    }).then(function(arrayBuffer){
-        // TODO: don't rerun
+    if (audioCache[cleanIpa] !== undefined) {
+        playAudio(audioCache[cleanIpa]);
+    } else {
+        fetch("https://www.ipaaudio.click/audio", {
+          method: "POST",
+          body: JSON.stringify({'ipa': cleanIpa}),
+          headers: {'Content-Type': 'application/json'}
+        }).then(function(response) {
+          return response.arrayBuffer();
+        }).then(function(arrayBuffer){
+            audioCache[cleanIpa] = arrayBuffer;
+            playAudio(arrayBuffer);
+        });
+    }
+  })
+}
+
+function playAudio(arrayBuffer) {
         var source = context.createBufferSource();
         context.decodeAudioData(arrayBuffer, function(decodedData) {
             if (!source.buffer) {
@@ -30,8 +42,6 @@ function wireButton(id, cleanIpa) {
             }
             source.start(0);
         })
-    });
-  })
 }
 
 function trimIPA(ipa) {

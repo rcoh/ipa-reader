@@ -9,7 +9,7 @@ function findIPA() {
         var text = jqueryDiv.text();
         var cleanIpa = trimIPA(text);
         var imageUrl = chrome.extension.getURL('play-button.svg');
-        jqueryDiv.append('<img id="audio' + i + '" style="width: 18px; opacity: .8;" src="' + imageUrl + '" />');
+        jqueryDiv.append('<img id="audio' + i + '" class="play-button" src="' + imageUrl + '" />');
         wireButton('audio' + i, cleanIpa);
     }
 }
@@ -26,22 +26,20 @@ function wireButton(id, cleanIpa) {
         }).then(function(response) {
           return response.arrayBuffer();
         }).then(function(arrayBuffer){
-            audioCache[cleanIpa] = arrayBuffer;
-            playAudio(arrayBuffer);
+            context.decodeAudioData(arrayBuffer, function(audio) {
+                audioCache[cleanIpa] = audio;
+                playAudio(audio);
+            })
         });
     }
   })
 }
 
-function playAudio(arrayBuffer) {
+function playAudio(audioData) {
         var source = context.createBufferSource();
-        context.decodeAudioData(arrayBuffer, function(decodedData) {
-            if (!source.buffer) {
-                source.buffer = decodedData;
-                source.connect(context.destination);
-            }
-            source.start(0);
-        })
+	source.buffer = audioData;
+	source.connect(context.destination);
+        source.start(0);
 }
 
 function trimIPA(ipa) {

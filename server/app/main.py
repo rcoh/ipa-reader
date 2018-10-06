@@ -34,6 +34,14 @@ def get_audio(audio_stream):
 def status():
     return jsonify({'status': 'OK'})
 
+@app.route("/healthz")
+def healthz():
+    return jsonify({'status': 'OK'})
+
+@app.route("/")
+def root():
+    return jsonify({'status': 'OK'})
+
 @app.route("/audio", methods=['POST'])
 def audio():
     """Expects a POST {'ipa': 'pərpəl'}"""

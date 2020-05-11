@@ -12,5 +12,6 @@
     "js": ["jquery-3.2.1.min.js", "ipa.js"],
     "css": ["ipa.css"]
   }],
+  "permissions": ["https://www.ipaaudio.click/audio"],
   "web_accessible_resources": ["play-button.svg"]
 }
